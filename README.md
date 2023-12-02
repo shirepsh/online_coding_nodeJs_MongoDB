@@ -26,7 +26,7 @@ Before you begin, ensure you have the following requirements:
 
    ```bash
    git clone https://github.com/shirepsh/online_coding_nodeJs_MongoDB.git
-   cd MoveoTest
+   cd online_coding_nodeJs_MongoDB
 
 2. install the dependencies:
 
