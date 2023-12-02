@@ -9,7 +9,12 @@
     "routes": [
       {
         "src": "/(.*)",
-        "dest": "/server.js"
+        "dest": "/server.js",
+        "methods": ["GET"],
+        "headers": { "cache-control": "s-maxage=60" },
+        "continue": true,
+        "status": 200,
+        "timeout": 30 
       }
     ]
   }
