@@ -33,6 +33,9 @@ Before you begin, ensure you have the following requirements:
     ```bash
     npm install
 
+3. in this point you need to add the .env file you got from me.
+pay attention to locate it on the root dir, the same root as the server.js
+
 3. run the project by:
 
     ```bash
