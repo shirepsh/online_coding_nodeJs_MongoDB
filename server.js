@@ -80,6 +80,10 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000');
+// server.listen(3000, () => {
+//   console.log('Server is running on http://localhost:3000');
+// use process.env.PORT for dynamic port assignment
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
