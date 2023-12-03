@@ -12,3 +12,6 @@ body {
     margin-bottom: 10px;
   }
   
+  .line-highlight {
+    background-color: #ffd700;
+}
