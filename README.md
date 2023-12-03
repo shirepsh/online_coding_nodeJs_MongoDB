@@ -34,11 +34,12 @@ Before you begin, ensure you have the following requirements:
     npm install
 
 3. in this point you need to add the .env file you got from me.
-pay attention to locate it on the root dir, the same root as the server.js
+pay attention to locate it insiae the online_codeing_nodeJS_MongoDB folder.
 
 3. run the project by:
 
     ```bash
+    cd api
     npm start
 
 ## Code Author
