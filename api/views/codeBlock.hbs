@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{codeBlock.title}}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/default.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/codemirror.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/mode/javascript/javascript.min.js"></script>
+</head>
+
+<body>
+    <h1>{{codeBlock.title}}</h1>
+    <div id="status"></div>
+    <div id="code-container"></div>
+    <div id="solution-smiley" style="display: none;">
+        <p>Congratulations, You did it!</p>
+        <img src="../smiley-face.png" alt="Smiley Face">
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const socket = io();
+            socket.emit('join', '{{codeBlock._id}}');
+
+            const statusElement = document.getElementById('status');
+            const codeContainer = document.getElementById('code-container');
+
+            socket.on('role-assigned', (role) => {
+                if (role === 'mentor') {
+                    statusElement.innerText = 'You are the mentor (read-only)';
+                    const editor = CodeMirror(codeContainer, {
+                        lineNumbers: true,
+                        mode: 'javascript',
+                        lineWrapping: true,
+                        styleActiveLine: true,
+                        value: `{{{codeBlock.code}}}`,
+                        readOnly: true
+                    });
+                    // Receive code changes and update the mentor's view
+                    socket.on('code-change', (codeData) => {
+                        editor.setValue(codeData.code);
+                        editor.addLineClass(codeData.line, 'background', 'line-highlight')
+                    });
+                } else {
+                    statusElement.innerText = 'You are a student (editable)';
+
+                    const editor = CodeMirror(codeContainer, {
+                        lineNumbers: true,
+                        mode: 'javascript',
+                        value: `{{{codeBlock.code}}}`
+                    });
+
+                    const solution = `{{{codeBlock.solution}}}`;
+
+                    // Listen for code changes from the student
+                    editor.on('changes', debounce(() => {
+                        const code = editor.getValue();
+                        const line = editor.getCursor().line
+                        const codeData = { code, line }
+                        socket.emit('code-change', { room: '{{codeBlock._id}}', codeData });
+
+                        // Check if the code matches the solution
+                        if (code === solution) {
+                            document.getElementById('solution-smiley').style.display = 'block';
+                        } else {
+                            document.getElementById('solution-smiley').style.display = 'none';
+                        }
+                    }, 300));
+                }
+
+            });
+
+            // Debounce function to limit the frequency of events
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
+        });
+    </script>
+</body>
+
+</html>
