@@ -27,10 +27,12 @@ const codeBlockSchema = new mongoose.Schema({
 
 // connect to the right collection
 const CodeBlock = mongoose.model('codeblocks', codeBlockSchema);
+const viewsPath = path.join(__dirname, './views')
 
 // set the template engine
 app.engine('hbs', exphbs());
 app.set('view engine', 'hbs');
+app.set('views', viewsPath);
 app.use(express.static('public'));
 
 // set the Lobby path and rendring the hbs file & the data
